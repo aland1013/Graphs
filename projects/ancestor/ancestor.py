@@ -9,6 +9,7 @@ Plan
    - adjacency list with each individual as a key and the value is a set of the parents
 3. Traverse graph:
    - farthest distance -> DFT
+   - create a hash table that stores the lengths of the path from the starting node
 '''
 def earliest_ancestor(ancestors, starting_node):
     graph = {}
@@ -24,8 +25,30 @@ def earliest_ancestor(ancestors, starting_node):
         else:
             graph[child].add(parent)
     
-    print(graph)
-
-earliest_ancestor([(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)], 10)
+    
+    stack = []
+    visited = set()
+    path_lengths = {starting_node: 0}
+    
+    stack.append(starting_node)
+    
+    while len(stack) > 0:
+        current_node = stack.pop()
+        
+        if current_node not in visited:
+            visited.add(current_node)
+            
+            for n in graph[current_node]:
+                stack.append(n)
+                path_lengths[n] = 1 + path_lengths[current_node]
+      
+    longest_path = max(path_lengths.values())
+    
+    solution = min([k for k,v in path_lengths.items() if v == longest_path])
+        
+    if solution == starting_node:
+        solution = -1
+    
+    return solution
             
     
