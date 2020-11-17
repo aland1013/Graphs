@@ -1,5 +1,6 @@
 import random
 import math
+from collections import deque
 
 class User:
     def __init__(self, name):
@@ -75,7 +76,21 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        queue = deque()
+        queue.append([user_id])
+        
+        while len(queue) > 0:
+            current_path = queue.popleft()
+            current_user = current_path[-1]
+            
+            if current_user not in visited:
+                visited[current_user] = current_path
+                
+                for friend in self.friendships[current_user]:
+                    new_path = list(current_path)
+                    new_path.append(friend)
+                    queue.append(new_path)
+        
         return visited
 
 
