@@ -1,8 +1,6 @@
 import random
 import math
-from itertools import combinations
 from collections import deque
-import time
 
 class User:
     def __init__(self, name):
@@ -54,18 +52,32 @@ class SocialGraph:
             self.add_user(f'user {n}')
             
         # Create friendships
-        possible_friendships = list(combinations(self.users, 2))
+        
+        # O(n^2) solution
+        # possible_friendships = []
         
         # for user_id in self.users:
         #     for friend_id in range(user_id + 1, self.last_id + 1):
         #         possible_friendships.append((user_id, friend_id))
 
-        random.shuffle(possible_friendships)
+        # random.shuffle(possible_friendships)
         
-        for i in range(num_users * avg_friendships // 2):
-            friendship = possible_friendships[i]
-            self.add_friendship(friendship[0], friendship[1])
-
+        # for i in range(num_users * avg_friendships // 2):
+        #     friendship = possible_friendships[i]
+        #     self.add_friendship(friendship[0], friendship[1])
+        
+        # O(n) solution
+        friendships = set()
+        
+        while len(friendships) < num_users * avg_friendships // 2:
+            a = random.randint(1, num_users)
+            b = random.randint(1, num_users)
+            
+            if (a < b):
+                friendships.add((a, b))
+                  
+        for f in friendships:
+            self.add_friendship(f[0], f[1])
 
     def get_all_social_paths(self, user_id):
         """
