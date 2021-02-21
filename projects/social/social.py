@@ -1,3 +1,7 @@
+import random
+import math
+from collections import deque
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -42,11 +46,38 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
         # Add users
-
+        for n in range(num_users):
+            self.add_user(f'user {n}')
+            
         # Create friendships
+        
+        # O(n^2) solution
+        # possible_friendships = []
+        
+        # for user_id in self.users:
+        #     for friend_id in range(user_id + 1, self.last_id + 1):
+        #         possible_friendships.append((user_id, friend_id))
+
+        # random.shuffle(possible_friendships)
+        
+        # for i in range(num_users * avg_friendships // 2):
+        #     friendship = possible_friendships[i]
+        #     self.add_friendship(friendship[0], friendship[1])
+        
+        # O(n) solution
+        friendships = set()
+        
+        while len(friendships) < num_users * avg_friendships // 2:
+            a = random.randint(1, num_users)
+            b = random.randint(1, num_users)
+            
+            if (a < b):
+                friendships.add((a, b))
+                  
+        for f in friendships:
+            self.add_friendship(f[0], f[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -58,7 +89,21 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        queue = deque()
+        queue.append([user_id])
+        
+        while len(queue) > 0:
+            current_path = queue.popleft()
+            current_user = current_path[-1]
+            
+            if current_user not in visited:
+                visited[current_user] = current_path
+                
+                for friend in self.friendships[current_user]:
+                    new_path = list(current_path)
+                    new_path.append(friend)
+                    queue.append(new_path)
+        
         return visited
 
 
